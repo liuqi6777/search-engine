@@ -8,8 +8,7 @@ scheme:[//[user:password@]host[:port]][/]path[?query][#fragment]
 
 
 # 字符串规划化
-def url_normalize(url: str) -> str:
-
+def url_normalize(url):
     url = url.replace('\n', '').replace(' ', '')
     url = parse.unquote(url)
     url = parse.urlparse(url)
@@ -55,11 +54,9 @@ def url_normalize(url: str) -> str:
 
     # 把query统一格式，这里将默认值删去，并字典序排序
     query = '&'.join(['='.join(i) for i in sorted(q)]).strip()
-
+    
     url = [scheme, netloc, path, params, query, fragment]
-
     url = str(parse.urlunparse(url)).strip()
-
     return url
 
 
