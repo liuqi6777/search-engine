@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>Search Engine 1.0</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css')}}"
+          crossorigin="anonymous">
+
+    <!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js')}}"
+        crossorigin="anonymous">
+    </script>
+
+</head>
+<body>
+
+<div class="text-center" style="margin-bottom:0">
+    <br><br>
+    <h1>Search Engine 1.0</h1>
+</div>
+<br>
+
+<div style="margin-top:30px">
+    <form class="bs-example bs-example-form" role="form" action="query" method="get">
+        <div class="col-lg-8 col-lg-offset-2">
+            <div class="input-group">
+                <input type="text" class="form-control" name="key" placeholder="请输入你想搜索的内容……">
+                <span class="input-group-btn">
+			  		<button class="btn btn-default" type="submit">Search</button>
+	       		</span>
+            </div><!-- /input-group -->
+        </div><!-- /.col-lg-6 -->
+    </form>
+</div>
+
+<br><br><br>
+
+</body>
+
+<footer>
+    <hr>
+    <div class="copyright" >
+        <div class="wrap">
+            <div class="copyright" align="center">
+                &copy; 2021 by LQ
+            </div>
+        </div>
+    </div>
+</footer>
+
+</html>
