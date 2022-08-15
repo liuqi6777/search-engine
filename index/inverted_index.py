@@ -8,7 +8,7 @@ import contextlib
 import os
 import pickle as pkl
 
-from postings import Postings
+from .postings import Postings
 
 
 class InvertedIndex:
@@ -117,7 +117,6 @@ class InvertedIndexWriter(InvertedIndex):
         postings_list: List[Int]
             List of docIDs where the term appears
         """
-        # Begin your code
         if term in self.terms:
             start_pos, doc_num, nbytes = self.postings_dict[term]
             self.index_file.seek(start_pos)
@@ -130,7 +129,6 @@ class InvertedIndexWriter(InvertedIndex):
         self.postings_dict[term] = (start_pos, len(postings_list), len(encoded_postings_list))
         self.index_file.seek(start_pos)
         self.index_file.write(encoded_postings_list)
-        # End your code
 
 
 class InvertedIndexIterator(InvertedIndex, contextlib.AbstractContextManager):
@@ -158,7 +156,6 @@ class InvertedIndexIterator(InvertedIndex, contextlib.AbstractContextManager):
         index file. In particular, you should not try to maintain the full
         index file in memory.
         """
-        # Begin your code
         term = next(self.term_iter)
         start_pos, _, nbytes = self.postings_dict[term]
         if start_pos != self.index_file.tell():
@@ -181,3 +178,19 @@ class InvertedIndexIterator(InvertedIndex, contextlib.AbstractContextManager):
         else:
             with open(self.metadata_file_path, 'wb') as f:
                 pkl.dump([self.postings_dict, self.terms], f)
+
+                
+class InvertedIndexMapper(InvertedIndex):
+    def __getitem__(self, key):
+        return self._get_postings_list(key)
+    
+    def _get_postings_list(self, term):
+        """Gets a postings list (of docIds) for `term`.
+        
+        This function should not iterate through the index file.
+        I.e., it should only have to read the bytes from the index file
+        corresponding to the postings list for the requested term.
+        """
+        pos, _, nbytes = self.postings_dict[term]
+        self.index_file.seek(pos)
+        return self.postings_encoding.decode(self.index_file.read(nbytes))

@@ -2,6 +2,7 @@
 DOC_DIR = 'doc/'
 DOC_ROW_DIR = 'doc/raw/'
 DOC_TEXT_DIR = 'doc/text/'
+DOC_PROCESS_DIR = 'doc/processed'
 INDEX_DIR = 'index_dir/'
 
 # search engine settings

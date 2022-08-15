@@ -1,40 +1,28 @@
+import os
 import pickle as pkl
 import math
 
 
 class Idf:
-    """Build idf dictionary and return idf of a term, whether in or not in built dictionary.
-        Recall from PA1 that postings_dict maps termID to a 3 tuple of 
-        (start_position_in_index_file, number_of_postings_in_list, length_in_bytes_of_postings_list)
-        
-        Remember that it's possible for a term to not appear in the collection corpus.
-        Thus to guard against such a case, we will apply Laplace add-one smoothing.
-        
-        Note: We expect you to store the idf as {term: idf} and handle term which is not in posting_list
-
-        Hint: For term not in built dictionary, we should return math.log10(total_doc_num / 1.0).
-    """
-    def __init__(self):
+    def __init__(self, index_dir):
         """Build an idf dictionary"""
         try:
-            # We provide docs.dict, terms.dict and BSBI.dict what you generated from PA1
-            with open("pa3-data/docs.dict", 'rb') as f:
+            with open(os.path.join(index_dir, "docs.dict"), 'rb') as f:
                 docs = pkl.load(f)
             self.total_doc_num = len(docs)
             print("Total Number of Docs is", self.total_doc_num)
 
-            with open("pa3-data/terms.dict", 'rb') as f:
+            with open(os.path.join(index_dir, "terms.dict"), 'rb') as f:
                 terms = pkl.load(f)
             self.total_term_num = len(terms)
             print("Total Number of Terms is", self.total_term_num)
 
-            with open('pa3-data/BSBI.dict', 'rb') as f:
-                postings_dict, termsID = pkl.load(f)
+            with open(os.path.join(index_dir, 'BSBI.dict'), 'rb') as f:
+                self.postings_dict, termsID = pkl.load(f)
 
             self.idf = {}
-            ### Begin your code
-
-            ### End your code
+            for term_id in termsID:
+                self.idf[term_id] = self._idf_func(term_id)
         except FileNotFoundError:
             print("doc_dict_file / term_dict_file Not Found!")
 
@@ -45,6 +33,14 @@ class Idf:
         Return(float): 
             idf of the term
         """
-        ### Begin your code
-
-        ### End your code
+        return self.idf.get(term, 0)
+    
+    def _idf_func(self, term_id):
+        return math.log(self.total_doc_num / self.postings_dict[term_id][1])
+    
+    
+class BM25Idf(Idf):
+    def _idf_func(self, term_id):
+        N = self.total_doc_num
+        n_q = self.postings_dict[term_id][1]
+        return math.log((N - n_q + 0.5) / (n_q + 0.5) + 1)

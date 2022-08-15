@@ -7,10 +7,15 @@ Copy from *Stanford CS276: Information Retrieval and Web Search* Programming ass
 import contextlib
 import heapq
 import os
+import sys
 import pickle as pkl
 
+sys.path.append('..')
+
+import jieba
+
 from utils.id_map import IdMap
-from inverted_index import InvertedIndexIterator, InvertedIndexWriter
+from .inverted_index import InvertedIndexIterator, InvertedIndexWriter, InvertedIndexMapper
 
 
 class BSBIIndex:
@@ -114,7 +119,6 @@ class BSBIIndex:
         index: InvertedIndexWriter
             Inverted index on disk corresponding to the block
         """
-        # Begin your code
         td_pairs = sorted(td_pairs)
         postings_lists = {}
         for term_id, doc_id in td_pairs:
@@ -138,7 +142,6 @@ class BSBIIndex:
             An instance of InvertedIndexWriter object into which each merged
             postings list is written out one at a time
         """
-        # Begin your code
         curr_term = -1
         curr_list = []
         for term_id, postings_list in heapq.merge(*indices, key=lambda x: x[0]):
@@ -151,9 +154,40 @@ class BSBIIndex:
                 curr_list = []
             curr_list += postings_list
         merged_index.append(curr_term, sorted(list(set(curr_list))))
+
+    def retrieve(self, query):
+        """Retrieves the documents corresponding to the conjunctive query
+        
+        Parameters
+        ----------
+        query: str
+            Space separated list of query tokens
+            
+        Result
+        ------
+        List[str]
+            Sorted list of documents which contains each of the query tokens. 
+            Should be empty if no documents are found.
+        
+        Should NOT throw errors for terms not in corpus
+        """
+        if len(self.term_id_map) == 0 or len(self.doc_id_map) == 0:
+            self.load()
+
+        queries = jieba.lcut(query.strip())
+        if len(queries) == 0:
+            return set()
+        print(queries)
+        term_ids = [self.term_id_map[q] for q in queries]
+        with InvertedIndexMapper(self.index_name, directory=self.output_dir, 
+                                 postings_encoding=self.postings_encoding) as mapper:
+            ret = set()
+            for i in range(len(term_ids)):
+                ret = ret | set(mapper[term_ids[i]])
+        return [self.doc_id_map[x] for x in ret]
         
         
 if __name__ == '__main__':
     from config import *
-    bsbi = BSBIIndex(data_dir=DOC_TEXT_DIR, output_dir=INDEX_DIR)
-    bsbi.index()
+    BSBI_instance = BSBIIndex(data_dir='../'+DOC_TEXT_DIR, output_dir='../'+INDEX_DIR)
+    BSBI_instance.index()
