@@ -191,6 +191,8 @@ class InvertedIndexMapper(InvertedIndex):
         I.e., it should only have to read the bytes from the index file
         corresponding to the postings list for the requested term.
         """
+        if term not in self.postings_dict.keys():
+            return []
         pos, _, nbytes = self.postings_dict[term]
         self.index_file.seek(pos)
         return self.postings_encoding.decode(self.index_file.read(nbytes))

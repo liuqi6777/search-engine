@@ -15,5 +15,4 @@ class BM25(BaseScorer):
             tf = d.body_tf.get(t, 0)
             dl = d.length
             score += idf * tf * (self.k1 + 1) / (tf + self.k1 * (1 - self.b + self.b * (dl / self.average_dl)))
-        print(d.title, score)
         return score

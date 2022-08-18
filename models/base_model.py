@@ -33,5 +33,4 @@ class TFIDFModel(BaseScorer):
         dl = d.length + 1
         score = [self.idf.get_idf(self.index.term_id_map[t]) * (math.log(d.body_tf.get(t, 0) + 1)) / dl for t in q]
         score = sum(score)
-        print(d.title, score)
         return score
