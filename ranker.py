@@ -17,7 +17,7 @@ class Ranker:
         self.index = index
         self.model = model
     
-    def retrieve(self, query, k):
+    def retrieve(self, query, k=None):
         results = self.index.retrieve(query)
         docs = []
         for res in results:
@@ -26,7 +26,10 @@ class Ranker:
         if isinstance(query, str):
             query = Query(query)
         docs = self.rank(query, docs)
-        return docs[:k]
+        if k is None:
+            return docs
+        else:
+            return docs[:k]
     
     def score(self, q, d):
         return self.model.get_score(q, d)

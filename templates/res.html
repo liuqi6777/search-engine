@@ -91,6 +91,32 @@
         font-size: large;
         color: gray;
     }
+
+    ul.pagination {
+        display: inline-block;
+        padding: 0;
+        margin: 0;
+    }
+
+    ul.pagination li {
+        display: inline;
+    }
+
+    ul.pagination li a {
+        color: #258cdb;
+        float: left;
+        padding: 8px 16px;
+        text-decoration: none;
+    }
+
+    ul.pagination li a.active {
+        color: #053375;
+    }
+
+    ul.pagination li a:hover:not(.active) {
+        color: #258cdb;
+        text-decoration: underline;
+    }
 </style>
 {% endblock %}
 
@@ -100,12 +126,18 @@
         <div class="search_header">
             <a href="/" class="home">Search Engine</a>
             <form role="form" action="query" method="get">
-                <input type="text" name="key" placeholder="请输入搜索内容...">
+                <input type="text" name="key" placeholder="{{ key }}">
                 <button type="submit"></button>
             </form>
         </div>
         <hr />
-        <p style="color: gray; font-size: 13px;">About {{ num }} results ({{ time }} seconds)</p>
+        <p style="color: gray; font-size: 13px;">
+            {% if pagination['curr_page'] == 1 %}
+            About {{ num }} results ({{ time }} seconds)
+            {% else %}
+            Page {{ pagination['curr_page'] }} of about {{ num }} results ({{ time }} seconds)
+            {% endif %}
+        </p>
     </div>
     <div>
         <div class="res-container">
@@ -125,6 +157,23 @@
         </div>
         <div></div>
     </div>
-    <br/><hr/><br/><br/>
+    <br />
+    <hr /><br />
+    <ul class="pagination">
+        {% if pagination['curr_page'] != 1 %}
+        <li><a href="/query?key={{ key }}&page={{ pagination['curr_page']-1 }}">Previous</a></li>
+        {% endif %}
+        {% for i in range(pagination['start'], pagination['end']) %}
+            {% if i == pagination['curr_page'] %}
+            <li><a class="active" href="#">{{ i }}</a></li>
+            {% else %}
+            <li><a href="/query?key={{ key }}&page={{ i }}">{{ i }}</a></li>
+            {% endif %}
+        {% endfor %}
+        {% if pagination['curr_page'] != pagination['num_pages'] %}
+        <li><a href="/query?key={{ key }}&page={{ pagination['curr_page']+1 }}">Next</a></li>
+        {% endif %}        
+    </ul>
+    <br /><br />
 </div>
 {% endblock %}
