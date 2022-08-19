@@ -1,90 +1,130 @@
-<!doctype html>
-<html lang="zh-CN">
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
-    <title>Search Engine 1.0</title>
+{% extends "base.html" %}
 
-    <!-- Bootstrap -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css')}}"
-          crossorigin="anonymous">
+{% block header %}
+<style>
+    .container {
+        /* display: flex; */
+        margin: 10px 120px auto;
+    }
 
-</head>
+    .res-container {
+        /* display: flex; */
+        width: 65%;
+    }
 
-<body>
+    .page-result {
+        text-align: left;
+        margin-top: 20px;
+        /* width: 50%; */
+    }
 
-<!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
-<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"
-        crossorigin="anonymous"></script>
+    .page-result>.page-title {
+        margin-top: 5px;
+        margin-bottom: 8px;
+    }
 
-<div class="text-center" style="margin-bottom:0">
-    <br><br>
-    <h1>Search Engine 1.0</h1>
-</div>
-<br>
+    .page-result a {
+        font-size: 18px;
+        color: #258cdb;
+        text-decoration: none;
 
-<div style="margin-top:30px">
-    <form class="bs-example bs-example-form" role="form" action="query" method="get">
-        <div class="col-lg-8 col-lg-offset-2">
-            <div class="input-group">
-                <input type="text" class="form-control" name="key" placeholder="{{ key }}">
-                <span class="input-group-btn">
-			  		<button class="btn btn-default" type="submit">Search</button>
-	       		</span>
-            </div><!-- /input-group -->
-        </div><!-- /.col-lg-6 -->
-    </form>
-</div>
+    }
 
-<div>
+    .page-result a:hover {
+        color: #053375;
+        text-decoration: underline;
+    }
 
-    <br><br><br>
-    <div>
-        <p align="center">
-            为您展示搜索结果共 {{ num }} 个。
-        </p>
+    .page-result a:visited {
+        color: #053375;
+        text-align: none;
+    }
 
-        {% for res in results %}
+    .page-result p {
+        color: gray;
+        font-size: 15px;
+    }
 
-            <hr>
-            <p align="center">
-                <a href="{{ res['url'] }}">
-                    {{ res['title'] | safe }}
-                </a>
-            </p>
-            <p align="center">
-                {{ res['abstract'] | safe }}
-            </p>
-            <p align="center">
-                <span style="color:gray; text-decoration: underline">
-                    {{ res['url'] }}
-                </span>
+    .search_header {
+        display: flex;
+        padding: 20px 0;
+    }
 
-            </p>
+    .search_header .home {
+        color: #053375;
+        font-size: 28px;
+        margin-top: 5px;
+        text-decoration: none;
+    }
 
-        {% else %}
-            <p align="center">
-                没有找到想要的结果……
-            </p>
+    .search_header input {
+        width: 400px;
+        height: 42px;
+        background-color: white;
+        border: 1px solid gray;
+        outline: 0;
+        font-size: 15px;
+        color: #000;
+        border-radius: 50px;
+        float: right;
+    }
 
-        {% endfor %}
+    .search_header form {
+        border-radius: 3px;
+        margin-left: 50px;
+        width: 85%;
+        height: 25px;
+        max-width: 400px;
+        z-index: 10;
+        border-radius: 50px;
+    }
 
-    </div>
-</div>
+    .search_header button {
+        background: none;
+        top: -2px;
+        right: 0;
+    }
 
-</body>
+    .search_header button:before {
+        content: "\f002";
+        font-family: FontAwesome;
+        font-size: large;
+        color: gray;
+    }
+</style>
+{% endblock %}
 
-<footer>
-    <hr>
-    <div class="copyright" >
-        <div class="wrap">
-            <div class="copyright" align="center">
-                &copy; 2021 by LQ
-            </div>
+{% block body %}
+<div class="container">
+    <div class="header">
+        <div class="search_header">
+            <a href="/" class="home">Search Engine</a>
+            <form role="form" action="query" method="get">
+                <input type="text" name="key" placeholder="请输入搜索内容...">
+                <button type="submit"></button>
+            </form>
         </div>
+        <hr />
+        <p style="color: gray; font-size: 13px;">About {{ num }} results ({{ time }} seconds)</p>
     </div>
-</footer>
-
-</html>
+    <div>
+        <div class="res-container">
+            {% for res in results %}
+            <div class="page-result">
+                <div class="page-url">
+                    <p>{{ res['url'] | truncate(50) }}</p>
+                </div>
+                <div class="page-title">
+                    <a href="{{ res['url'] }}">{{ res['title'] | safe }}</a>
+                </div>
+                <div class="page-body">
+                    <p>{{ res['abstract'] | safe}}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div></div>
+    </div>
+    <br/><hr/><br/><br/>
+</div>
+{% endblock %}

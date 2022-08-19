@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Search Engine 2.0</title>
+    <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='img/icon.png') }}"
+        media="screen" />
+    <link href="http://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    {% block header %}
+    {% endblock %}
+</head>
+
+<body>
+    {% block body %}
+    {% endblock %}
+</body>
+
+<footer>
+    <!-- <div>
+        &copy; 2022 by Liu Qi
+    </div> -->
+</footer>
+
+</html>
